@@ -4,10 +4,9 @@ use TestApp\App;
 
 error_reporting(E_ALL);
 ini_set("display_errors", "1");
-
+session_start();
 
 $config = include 'config.php';
-
 
 
 
@@ -19,4 +18,7 @@ spl_autoload_register(function ($class_name) {
 
 
 App::init($config);
+
+include 'helpers.php';
+
 
