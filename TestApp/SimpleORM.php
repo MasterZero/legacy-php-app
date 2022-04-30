@@ -58,6 +58,27 @@ class SimpleORM implements JsonSerializable
         return new static($data);
     }
 
+    public function update($params)
+    {
+
+        $columns = [];
+        $values = [];
+
+        foreach($params as $key => $value) {
+
+            if ($value == 'null') {
+                $columns[] = "`$key`=NULL";
+            } else {
+                $columns[] = "`$key`=?";
+                $values[] = $value;
+            }
+        }
+
+        $columns = implode(', ', $columns);
+
+        DB::raw('UPDATE ' . static::$table . ' SET ' . $columns . 'WHERE `id`=' . $this->id, $values);
+    }
+
     public static function find($id)
     {
         return static::where('`id`=?', [$id]);

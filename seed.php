@@ -9,15 +9,15 @@ use TestApp\Auth;
 $users = [
     [
         'login' => 'admin',
-        'password' => Auth::hash('heallyhardpassword1337'),
+        'password' => Auth::hash('reallyhardpassword1337'),
     ],
     [
         'login' => 'admin2',
-        'password' => Auth::hash('heallyhardpassword1337_2'),
+        'password' => Auth::hash('reallyhardpassword1337_2'),
     ],
     [
         'login' => 'admin3',
-        'password' => Auth::hash('heallyhardpassword1337_3'),
+        'password' => Auth::hash('reallyhardpassword1337_3'),
     ],
 ];
 
