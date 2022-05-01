@@ -52,7 +52,8 @@ form select{
 }
 
 
-form button {
+form button,
+.add-new {
     margin-top: 10px;
     padding: 5px;
     background: #95ec95;
@@ -77,7 +78,9 @@ form button {
     color: #777;
 }
 
-#edit-form {
+#edit-form,
+#create-form,
+#info-container {
     max-width: 300px;
     margin: 30px auto 30px auto;
     background: #eee;
@@ -85,6 +88,7 @@ form button {
     border: solid 1px #ddd;
     border-radius: 3px;
 }
+
 
 .hidden {
     display: none;

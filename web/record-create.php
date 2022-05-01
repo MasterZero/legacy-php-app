@@ -14,8 +14,6 @@ if (!Auth::user()) {
 }
 
 
-$record = Record::find(isset($_POST['id']) ? $_POST['id'] : '');
-
 if (!isset($_POST['name'])) {
     return jsonResponse(['error' => ' name variable is not set']);
 }
@@ -29,16 +27,12 @@ if (!isset($_POST['parent_id'])) {
 }
 
 
-if (!$record) {
-    return jsonResponse(['error' => 'no such record by id']);
-}
-
 
 /**
  * @TODO: add check is parent id is correct
  */
 
-$record->update([
+Record::create([
     'parent_id' => $_POST['parent_id'],
     'name' => $_POST['name'],
     'description' => $_POST['description'],

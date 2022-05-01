@@ -79,6 +79,35 @@ class SimpleORM implements JsonSerializable
         DB::raw('UPDATE ' . static::$table . ' SET ' . $columns . 'WHERE `id`=' . $this->id, $values);
     }
 
+
+    public static function create($params)
+    {
+        $columns = [];
+        $values = [];
+        $paramValues = [];
+        foreach($params as $key => $value) {
+
+            $columns[] = "`$key`";
+            if ($value == 'null') {
+                $values[] = 'NULL';
+            } else {
+                $values[] = '?';
+                $paramValues[] = $value;
+            }
+        }
+        $columns = implode(', ', $columns);
+        $values = implode(', ', $values);
+
+        DB::raw('INSERT INTO `' . static::$table . '` (' . $columns . ') VALUES (' . $values . ')', $paramValues);
+        return DB::lastId();
+    }
+
+
+    public function delete()
+    {
+        DB::raw('DELETE FROM `' . static::$table . '` WHERE `id`=?', [$this->id]);
+    }
+
     public static function find($id)
     {
         return static::where('`id`=?', [$id]);

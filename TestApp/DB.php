@@ -14,7 +14,7 @@ class DB
     public static function init($host, $name, $user, $password)
     {
         static::$_pdo = new PDO("mysql:host=$host;dbname=$name", $user, $password);
-        // enable pdo erros
+        // enable pdo errors
         static::$_pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     }
 
@@ -44,18 +44,8 @@ class DB
     }
 
 
-    public static function insert($tableName, $columns)
+    public static function lastId()
     {
-        $fields = [];
-        $values = [];
-
-        foreach($columns as $key => $value) {
-            $fields[] = "`$key`";
-            $values[] = '?';
-        }
-        $params = array_values($columns);
-        $request = 'INSERT INTO `' . $tableName . '` ( ' . implode(',', $fields) . ') VALUES (' . implode(',', $values) . ')';
-        DB::raw($request, $params);
         return static::$_pdo->lastInsertId();
     }
 

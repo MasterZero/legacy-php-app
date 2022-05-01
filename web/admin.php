@@ -37,6 +37,8 @@ $user = Auth::user();
 
     function open_edit_record(param) {
         document.getElementById('edit-form').classList.remove("hidden");
+        document.getElementById('create-form').classList.remove("hidden");
+        document.getElementById('create-form').classList.add('hidden');
 
         let record_id = param.getAttribute('record-id');
         let parent_id = param.getAttribute('parent-id');
@@ -53,6 +55,37 @@ $user = Auth::user();
 
         fill_parents(parent_block, jsonTree, record_id);
         parent_block.value = parent_id;
+    }
+
+    function open_create_record() {
+        document.getElementById('create-form').classList.remove("hidden");
+        document.getElementById('edit-form').classList.remove("hidden");
+        document.getElementById('edit-form').classList.add('hidden');
+
+
+        document.getElementById('create-name').value = '';
+        document.getElementById('edit-description').value = '';
+
+        let parent_block = document.getElementById('create-parent');
+        parent_block.innerHTML = '<option value="null">Root</option>';
+
+        fill_parents(parent_block, jsonTree, null);
+        parent_block.value = 'null';
+    }
+
+    function on_delete_record(record_id) {
+        document.getElementById('edit-form').classList.remove("hidden");
+        document.getElementById('edit-form').classList.add('hidden');
+
+        var data = new FormData();
+        data.append('id', record_id);
+
+        post('record-delete.php', 'POST', data, function () {
+            jsonTree = JSON.parse(this.responseText);
+            if (jsonTree.status == 'OK') {
+                update_tree();
+            }
+        });
     }
 
     function draw_tree() {
@@ -82,16 +115,40 @@ $user = Auth::user();
             edit_button.innerText = 'edit';
             record_block.appendChild( edit_button );
 
+
+            let delete_button = document.createElement('button');
+            delete_button.setAttribute('onclick', 'on_delete_record(this.getAttribute("record-id"))');
+            delete_button.setAttribute('record-id', child.id);
+            delete_button.innerText = 'delete';
+            record_block.appendChild( delete_button );
+
+
             draw_tree_child(child.childs, level + 1);
         }
     }
 
+
     function on_edit_submit()
     {
         let form = document.getElementById('edit-parent-form');
-        var data = new FormData(form);
+        let data = new FormData(form);
 
         post('record-update.php', 'POST', data, function () {
+            jsonTree = JSON.parse(this.responseText);
+            if (jsonTree.status == 'OK') {
+                update_tree();
+                document.getElementById('edit-form').classList.remove("hidden");
+                document.getElementById('edit-form').classList.add('hidden');
+            }
+        });
+    }
+
+    function on_create_submit()
+    {
+        let form = document.getElementById('create-parent-form');
+        let data = new FormData(form);
+
+        post('record-create.php', 'POST', data, function () {
             jsonTree = JSON.parse(this.responseText);
             if (jsonTree.status == 'OK') {
                 update_tree();
@@ -138,7 +195,7 @@ $user = Auth::user();
 
     <div class="panel">
         <div class="container">
-            <a href="">user page</a><a href="">admin page</a><?php if ($user) : ?><a href="/logout.php">logout</a><?php endif; ?>
+            <a href="/">user page</a><a href="/admin.php">admin page</a><?php if ($user) : ?><a href="/logout.php">logout</a><?php endif; ?>
         </div>
     </div>
 
@@ -146,6 +203,7 @@ $user = Auth::user();
         <div class="container">
             <?php if ($user) : ?>
             <div id="tree-view">admin three</div>
+            <button class="add-new" type="button" onclick="open_create_record()">Add new</button>
             <div id="edit-form" class="hidden">
                 <form id="edit-parent-form">
                     <p id="edit-header"></p>
@@ -157,6 +215,18 @@ $user = Auth::user();
                     <p>Description:</p>
                     <input id="edit-description" type="text" name="description">
                     <button type="button" onclick="on_edit_submit()">save</button>
+                </form>
+            </div>
+            <div id="create-form" class="hidden">
+                <form id="create-parent-form">
+                    <p>Create new record</p>
+                    <p>Parent:</p>
+                    <select id="create-parent" name="parent_id"></select>
+                    <p>Name:</p>
+                    <input id="create-name" type="text" name="name">
+                    <p>Description:</p>
+                    <input id="create-description" type="text" name="description">
+                    <button type="button" onclick="on_create_submit()">create</button>
                 </form>
             </div>
             <?php else : ?>

@@ -4,9 +4,12 @@ include 'autoload.php';
 
 use TestApp\DB;
 use TestApp\Auth;
+use TestApp\Model\User;
+use TestApp\Model\Record;
 
 
-$users = [
+
+foreach([
     [
         'login' => 'admin',
         'password' => Auth::hash('reallyhardpassword1337'),
@@ -19,7 +22,9 @@ $users = [
         'login' => 'admin3',
         'password' => Auth::hash('reallyhardpassword1337_3'),
     ],
-];
+] as $user) {
+    User::create($user);
+}
 
 
 $records = [
@@ -120,9 +125,6 @@ $records = [
     ],
 ];
 
-foreach($users as $user) {
-    DB::insert('users', $user);
-}
 
 
 function insert_nested_record($records_array, $parent_id = null)
@@ -132,7 +134,7 @@ function insert_nested_record($records_array, $parent_id = null)
         if (!is_null($parent_id)) {
             $data['parent_id'] = $parent_id;
         }
-        $current_id = DB::insert('records', $data);
+        $current_id = Record::create($data);
         insert_nested_record($record['childrens'], $current_id);
     }
 }

@@ -9,7 +9,8 @@ use TestApp\Auth;
 
 
 if (!Auth::user()) {
-    Auth::login($_POST['login'] ?? '', $_POST['password'] ?? '');
+    Auth::login(isset($_POST['login']) ? $_POST['login'] : '',
+        isset($_POST['password']) ? $_POST['password'] : '');
 }
 
 return redirect_back();
