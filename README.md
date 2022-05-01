@@ -18,3 +18,6 @@ php5.6 seed.php
 cd web
 php5.6 -S 127.0.0.1:8000
 ```
+
+Test account data:
+admin:reallyhardpassword1337
